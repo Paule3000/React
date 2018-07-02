@@ -17,3 +17,15 @@ npm install -g webpack nodemon
 - Run a nodemon process in another terminal: `nodemon`
 - Go to http://localhost:3000, you should see a "Hello React" line.
 
+
+Paule
+Simple method without restarts or auto build
+
+Build:
+webpack
+npm run-script build (for server)
+
+Run:
+npm start
+
+OR run in debugger using Launch Server.js config (see .vscode/launch.json)

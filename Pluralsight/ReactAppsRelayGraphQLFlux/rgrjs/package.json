@@ -4,7 +4,7 @@
   "description": "A collection of educational resources about React, GraphQL, and Relay. Updated 20180518 for Babel - PE",
   "scripts": {
     "build": "babel src --out-dir dist --source-maps",
-    "start": "nodemon --exec \"babel-node --presets react,es2015\" server.js",
+    "start": "nodemon --exec \"babel-node --presets react,es2015\" dist/server.js",
     "debug": "babel-node --presets react,es2015"
   },
   "repository": {
@@ -26,7 +26,7 @@
     "babel-preset-react": "^6.24.1",
     "express": "^4.16.3",
     "kerberos": "0.0.23",
-    "mongodb": "^3.1.0-beta4",
+    "mongodb": "^3.0.10",
     "nodemon": "^1.17.4",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
