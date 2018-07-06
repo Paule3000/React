@@ -1,10 +1,16 @@
 import express from 'express';
+import schema from '../data/schema';
+import GraphQLHTTP from 'express-graphql';
 
 import {MongoClient} from 'mongodb';
 
 let app = express();
-
 app.use(express.static('public'));
+
+app.use('/graphql', GraphQLHTTP({
+    schema,
+    graphiql: true
+}));
 
 let url = 'mongodb://localhost:27017';
 const dbName = 'rgrjs';
