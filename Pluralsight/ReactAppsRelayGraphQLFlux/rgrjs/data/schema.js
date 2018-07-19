@@ -9,43 +9,45 @@ import {
 // Maintain for mutation
 let counter = 69;
 
-let data = [
-    { counter: 42 },
-    { counter: 43 },
-    { counter: 44 }
-];
-
-let counterType = new GraphQLObjectType({
-    name: 'Counter',
-    fields: () => ({
-        counter: {type: GraphQLInt}
-    })
-});
-
-let schema = new GraphQLSchema({
-    query: new GraphQLObjectType({
-        name: 'Query',
+// db is already connected
+let Schema = (db) => {
+    let linkType = new GraphQLObjectType({
+        name: 'Link',
         fields: () => ({
-            data: {
-                type: GraphQLList(counterType),
-                resolve: () => data
-            },
-            message: {
-                type: GraphQLString,
-                resolve: () => 'Hello GraphQL'
-            }
+            _id: { type: GraphQLString },
+            title: { type: GraphQLString },
+            url: { type: GraphQLString }
         })
-    }),
+    });
 
-    mutation: new GraphQLObjectType({
-        name: 'Mutation',
-        fields: () => ({
-            incrementCounter: {
-                type: GraphQLInt,
-                resolve: () => ++counter
-            }
+    let schema = new GraphQLSchema({
+        query: new GraphQLObjectType({
+            name: 'Query',
+            fields: () => ({
+                links: {
+                    type: new GraphQLList(linkType),
+                    // GraphQL and mongodb lib both support promises as standard
+                    resolve: () => db.collection("links").find({}).toArray()
+                },
+                message: {
+                    type: GraphQLString,
+                    resolve: () => 'Hello GraphQL'
+                }
+            })
+        }),
+
+        mutation: new GraphQLObjectType({
+            name: 'Mutation',
+            fields: () => ({
+                incrementCounter: {
+                    type: GraphQLInt,
+                    resolve: () => ++counter
+                }
+            })
         })
-    })
-});
+    });
 
-export default schema;
+    return schema;
+};
+
+export default Schema;
