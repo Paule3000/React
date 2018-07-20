@@ -29,3 +29,14 @@ Run:
 npm start
 
 OR run in debugger using Launch Server.js config (see .vscode/launch.json)
+
+
+Issues:
+Currently failing with error:
+"SyntaxError: Unexpected token import"
+
+This is debug only and follows installation of babel stage-0 preset
+
+
+Async db access method also failed and I reinstated the original version
+
