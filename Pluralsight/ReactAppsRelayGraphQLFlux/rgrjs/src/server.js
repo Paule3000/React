@@ -1,10 +1,14 @@
 import "babel-polyfill";
 
+import fs from 'fs';
 import express from 'express';
 import schema from './data/schema';
 import GraphQLHTTP from 'express-graphql';
+import {graphql} from 'graphql';
+import {introspectionQuery} from 'graphql/utilities';
 
 import {MongoClient} from 'mongodb';
+import { ENGINE_METHOD_CIPHERS } from "constants";
 
 let app = express();
 app.use(express.static('public'));
@@ -43,6 +47,14 @@ MongoClient.connect(url, (err, client) => {
     }));
 
     app.listen(3000, () => console.log('listening on port 3000'));
+
+    // Generate json schema
+    let json = await graphql(schema, introspectionQuery);
+    fs.writeFile('./data/schema.json', JSON.stringify(json, null, 2), err => {
+        if (err) throw err;
+    
+        console.log("JSON schema created.");
+    })
 });
 
 // MongoClient.connect(url, function(err, client) {
