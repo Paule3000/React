@@ -40,3 +40,9 @@ This is debug only and follows installation of babel stage-0 preset
 
 Async db access method also failed and I reinstated the original version
 
+
+Issues
+------
+ReferenceError: regeneratorRuntime is not defined
+Add babel-polyfill
+https://babeljs.io/docs/en/babel-polyfill/

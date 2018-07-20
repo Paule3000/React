@@ -1,5 +1,7 @@
+import "babel-polyfill";
+
 import express from 'express';
-import schema from '../data/schema';
+import schema from './data/schema';
 import GraphQLHTTP from 'express-graphql';
 
 import {MongoClient} from 'mongodb';
@@ -11,6 +13,8 @@ let url = 'mongodb://localhost:27017';
 const dbName = 'rgrjs';
 let db;
 
+// Error: db.collection is not a function
+// 
 // Use async feature from stage-0 advanced features
 // (async() => {
 //     let db = await MongoClient.connect(url);
@@ -31,6 +35,7 @@ MongoClient.connect(url, (err, client) => {
     }
 
     db = client.db('rgrjs');
+    // let db = client.db('rgrjs');
 
     app.use('/graphql', GraphQLHTTP({
         schema: schema(db),
