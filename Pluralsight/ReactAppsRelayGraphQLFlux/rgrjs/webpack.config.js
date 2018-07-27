@@ -1,3 +1,6 @@
+// Trying to require the plugin then use it.
+let  babelRelayPlugin = require('./src/babelRelayPlugin.js');
+
 module.exports = {
   entry: "./js/app.js",  
   // entry: "./js/server.js",  
@@ -13,5 +16,6 @@ module.exports = {
       }
     ]
   },
-  plugins: ['./src/babelRelayPlugin']
+  plugins: [new babelRelayPlugin()]
+  // './src/babelRelayPlugin.js'
 };
