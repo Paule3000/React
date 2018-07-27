@@ -2,7 +2,7 @@ import "babel-polyfill";
 
 import fs from 'fs';
 import express from 'express';
-import schema from './data/schema';
+import Schema from './data/schema';
 import GraphQLHTTP from 'express-graphql';
 import {graphql} from 'graphql';
 import {introspectionQuery} from 'graphql/utilities';
@@ -20,29 +20,15 @@ let db;
 // Error: db.collection is not a function
 // 
 // Use async feature from stage-0 advanced features
-// (async() => {
-//     let db = await MongoClient.connect(url);
+(async() => {
+    // let db = await MongoClient.connect(url);
+    let client = await MongoClient.connect(url);
 
-//     app.use('/graphql', GraphQLHTTP({
-//         schema: schema(db),
-//         graphiql: true
-//     }));
-
-//     app.listen(3000, () => console.log('listening on port 3000'));
-// })();
-
-MongoClient.connect(url, (err, client) => {
-    console.log("err: " + err + "db: " + client);
-    if (err) {
-        console.log("Connect: " + err);
-        throw err;
-    }
-
-    db = client.db('rgrjs');
-    // let db = client.db('rgrjs');
+    db = client.db(dbName);
+    let schema = Schema(db)
 
     app.use('/graphql', GraphQLHTTP({
-        schema: schema(db),
+        schema,
         graphiql: true
     }));
 
@@ -50,12 +36,38 @@ MongoClient.connect(url, (err, client) => {
 
     // Generate json schema
     let json = await graphql(schema, introspectionQuery);
-    fs.writeFile('./data/schema.json', JSON.stringify(json, null, 2), err => {
+    fs.writeFile('./schema/schema.json', JSON.stringify(json, null, 2), err => {
         if (err) throw err;
     
         console.log("JSON schema created.");
     })
-});
+})();
+
+// MongoClient.connect(url, (err, client) => {
+//     console.log("err: " + err + "db: " + client);
+//     if (err) {
+//         console.log("Connect: " + err);
+//         throw err;
+//     }
+
+//     db = client.db('rgrjs');
+//     // let db = client.db('rgrjs');
+
+//     app.use('/graphql', GraphQLHTTP({
+//         schema: schema(db),
+//         graphiql: true
+//     }));
+
+//     app.listen(3000, () => console.log('listening on port 3000'));
+
+//     // Generate json schema
+//     let json = await graphql(schema, introspectionQuery);
+//     fs.writeFile('./data/schema.json', JSON.stringify(json, null, 2), err => {
+//         if (err) throw err;
+    
+//         console.log("JSON schema created.");
+//     })
+// });
 
 // MongoClient.connect(url, function(err, client) {
 //   console.log("Connected successfully to server");

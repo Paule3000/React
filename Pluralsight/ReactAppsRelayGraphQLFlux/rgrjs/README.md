@@ -31,14 +31,20 @@ npm start
 OR run in debugger using Launch Server.js config (see .vscode/launch.json)
 
 
-Issues:
-Currently failing with error:
-"SyntaxError: Unexpected token import"
+Current State
+-------------
+Webpack failing with addition of babelRelayPlugin:
+Invalid configuration object. Webpack has been initialised using a configuration
+ object that does not match the API schema.
+ - configuration.plugins[0] should be one of these:
+   object { apply, . } | function
+   -> Plugin of type object or instanceof Function
+   Details:
+    * configuration.plugins[0] should be an object.
+      -> Plugin instance
+    * configuration.plugins[0] should be an instance of function
+      -> Function acting as plugin
 
-This is debug only and follows installation of babel stage-0 preset
-
-
-Async db access method also failed and I reinstated the original version
 
 
 Issues
@@ -46,3 +52,16 @@ Issues
 ReferenceError: regeneratorRuntime is not defined
 Add babel-polyfill
 https://babeljs.io/docs/en/babel-polyfill/
+
+
+Currently failing with error:
+"SyntaxError: Unexpected token import"
+This is debug only and follows installation of babel stage-0 preset
+
+Moved data/schema.js under src directory so it is compiled by babel.
+
+
+Async db access method failed and I reinstated the original version
+Corrected with up to date MongoDb code. connect() returns a client.
+
+
