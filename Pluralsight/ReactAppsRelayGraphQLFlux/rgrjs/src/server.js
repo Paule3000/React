@@ -17,30 +17,34 @@ let url = 'mongodb://localhost:27017';
 const dbName = 'rgrjs';
 let db;
 
-// Error: db.collection is not a function
-// 
+
 // Use async feature from stage-0 advanced features
 (async() => {
-    // let db = await MongoClient.connect(url);
-    let client = await MongoClient.connect(url);
+    try {
+        // let db = await MongoClient.connect(url);
+        let client = await MongoClient.connect(url);
 
-    db = client.db(dbName);
-    let schema = Schema(db)
+        db = client.db(dbName);
+        let schema = Schema(db)
 
-    app.use('/graphql', GraphQLHTTP({
-        schema,
-        graphiql: true
-    }));
+        app.use('/graphql', GraphQLHTTP({
+            schema,
+            graphiql: true
+        }));
 
-    app.listen(3000, () => console.log('listening on port 3000'));
+        app.listen(3000, () => console.log('listening on port 3000'));
 
-    // Generate json schema
-    let json = await graphql(schema, introspectionQuery);
-    fs.writeFile('./schema/schema.json', JSON.stringify(json, null, 2), err => {
-        if (err) throw err;
-    
-        console.log("JSON schema created.");
-    })
+        // Generate json schema
+        let json = await graphql(schema, introspectionQuery);
+        fs.writeFile('./schema/schema.json', JSON.stringify(json, null, 2), err => {
+            if (err) throw err;
+        
+            console.log("JSON schema created.");
+        })
+    }
+    catch(e) {
+        console.log(e);
+    }
 })();
 
 // MongoClient.connect(url, (err, client) => {

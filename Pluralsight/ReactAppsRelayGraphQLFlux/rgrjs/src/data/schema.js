@@ -3,34 +3,62 @@ import {
     GraphQLObjectType,
     GraphQLList,
     GraphQLInt,
-    GraphQLString
+    GraphQLString,
+    GraphQLNonNull,
+    GraphQLID
 } from 'graphql';
+
+import {
+    connectionDefinitions,
+    connectionArgs,
+    connectionFromPromisedArray
+} from 'graphql-relay';
 
 // Maintain for mutation
 let counter = 69;
 
 // db is already connected
 let Schema = (db) => {
+    let store = {};
+
+    let storeType = new GraphQLObjectType({
+        name: 'Store',
+        fields: () => ({
+            linkConnection: {
+                type: linkConnection.connectionType,
+                args: connectionArgs,
+                resolve: (_, args) => connectionFromPromisedArray(
+                    db.collection("links").find({}).toArray(),
+                    args
+                )
+            }
+        })
+    });
+
     let linkType = new GraphQLObjectType({
         name: 'Link',
         fields: () => ({
-            _id: { type: GraphQLString },
+            id: {
+                type: GraphQLNonNull(GraphQLID),
+                resolve: (obj) => obj._id
+            },
             title: { type: GraphQLString },
             url: { type: GraphQLString }
         })
+    });
+
+    let linkConnection = connectionDefinitions({
+        name: 'Link',
+        nodeType: linkType
     });
 
     let schema = new GraphQLSchema({
         query: new GraphQLObjectType({
             name: 'Query',
             fields: () => ({
-                links: {
-                    type: new GraphQLList(linkType),
-                    // GraphQL and mongodb lib both support promises as standard
-                    resolve: () => {
-                        let links = db.collection("links");
-                        return links.find({}).toArray()
-                    }
+                store: {
+                    type: storeType,
+                    resolve: () => store
                 },
                 message: {
                     type: GraphQLString,

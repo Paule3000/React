@@ -16,6 +16,7 @@ module.exports = {
       }
     ]
   },
-  plugins: [new babelRelayPlugin()]
+  // plugins: [babelRelayPlugin]
+  plugins: ['./src/babelRelayPlugin']
   // './src/babelRelayPlugin.js'
 };
