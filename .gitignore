@@ -3,3 +3,4 @@ bundle.js*
 dist/
 *.exe.lnk
 rgrjs1/
+*.doc
