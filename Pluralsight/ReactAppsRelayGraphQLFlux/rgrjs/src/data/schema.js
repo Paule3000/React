@@ -9,9 +9,11 @@ import {
 } from 'graphql';
 
 import {
+    globalIdField,
     connectionDefinitions,
     connectionArgs,
-    connectionFromPromisedArray
+    connectionFromPromisedArray,
+    mutationWithClientMutationId
 } from 'graphql-relay';
 
 // Maintain for mutation
@@ -22,6 +24,7 @@ let Schema = (db) => {
     let store = {};
 
     let storeType = new GraphQLObjectType({
+        id: globalIdField("Store"),
         name: 'Store',
         fields: () => ({
             linkConnection: {
@@ -52,6 +55,29 @@ let Schema = (db) => {
         nodeType: linkType
     });
 
+    let createLinkMutation = mutationWithClientMutationId({
+        name: 'CreateLink',
+        inputFields: {
+            title: { type: new GraphQLNonNull(GraphQLString) },
+            url: { type: new GraphQLNonNull(GraphQLString) }
+        },
+
+        outputFields: {
+            linkEdge: {
+                type: linkConnection.edgeType,
+                resolve: (obj) => ({ node: obj.ops[0], cursor: obj.insertedId })
+            },
+            store: {
+                type: storeType,
+                resolve: () => store
+            }
+        },
+
+        mutateAndGetPayload: ({title, url}) => {
+            return db.collection("links").insertOne({title, url});
+        }
+    });
+
     let schema = new GraphQLSchema({
         query: new GraphQLObjectType({
             name: 'Query',
@@ -70,12 +96,19 @@ let Schema = (db) => {
         mutation: new GraphQLObjectType({
             name: 'Mutation',
             fields: () => ({
-                incrementCounter: {
-                    type: GraphQLInt,
-                    resolve: () => ++counter
-                }
+                createLink: createLinkMutation
             })
         })
+
+        // mutation: new GraphQLObjectType({
+        //     name: 'MutationIncrement',
+        //     fields: () => ({
+        //         incrementCounter: {
+        //             type: GraphQLInt,
+        //             resolve: () => ++counter
+        //         }
+        //     })
+        // })
     });
 
     return schema;
