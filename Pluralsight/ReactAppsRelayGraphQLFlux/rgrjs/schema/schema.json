@@ -441,12 +441,24 @@
           "description": null,
           "fields": [
             {
-              "name": "link",
+              "name": "linkEdge",
               "description": null,
               "args": [],
               "type": {
                 "kind": "OBJECT",
-                "name": "Link",
+                "name": "LinkEdge",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "store",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Store",
                 "ofType": null
               },
               "isDeprecated": false,
